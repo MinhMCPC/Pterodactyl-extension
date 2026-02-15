@@ -1,0 +1,218 @@
+{
+    "name": "pterodactyl-sftp",
+    "displayName": "Pterodactyl SFTP",
+    "description": "Connect to Pterodactyl panel servers, browse and edit files remotely via API",
+    "version": "1.0.0",
+    "publisher": "minhmcpc",
+    "author": "minhmcpc",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "pterodactyl-sftp",
+                    "title": "Pterodactyl SFTP",
+                    "icon": "resources/icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "pterodactyl-sftp": [
+                {
+                    "id": "pterodactylServers",
+                    "name": "Servers",
+                    "icon": "resources/icon.svg"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "pterodactyl.addAccount",
+                "title": "Pterodactyl: Add Account",
+                "icon": "$(add)"
+            },
+            {
+                "command": "pterodactyl.editAccount",
+                "title": "Pterodactyl: Edit Account",
+                "icon": "$(edit)"
+            },
+            {
+                "command": "pterodactyl.removeAccount",
+                "title": "Pterodactyl: Remove Account",
+                "icon": "$(trash)"
+            },
+            {
+                "command": "pterodactyl.refreshServers",
+                "title": "Pterodactyl: Refresh Servers",
+                "icon": "$(refresh)"
+            },
+            {
+                "command": "pterodactyl.connectServer",
+                "title": "Pterodactyl: Connect to Server",
+                "icon": "$(remote)"
+            },
+            {
+                "command": "pterodactyl.disconnectServer",
+                "title": "Pterodactyl: Disconnect Server",
+                "icon": "$(debug-disconnect)"
+            },
+            {
+                "command": "pterodactyl.reconnectServer",
+                "title": "Pterodactyl: Reconnect Server",
+                "icon": "$(debug-restart)"
+            },
+            {
+                "command": "pterodactyl.openTerminal",
+                "title": "Pterodactyl: Open Server Terminal",
+                "icon": "$(terminal)"
+            },
+            {
+                "command": "pterodactyl.exportData",
+                "title": "Pterodactyl: Export Account Data",
+                "icon": "$(cloud-download)"
+            },
+            {
+                "command": "pterodactyl.importData",
+                "title": "Pterodactyl: Import Account Data",
+                "icon": "$(cloud-upload)"
+            },
+            {
+                "command": "pterodactyl.showSftpLog",
+                "title": "Pterodactyl: Show SFTP Debug Log",
+                "icon": "$(output)"
+            },
+            {
+                "command": "pterodactyl.startServer",
+                "title": "Start Server",
+                "icon": "$(play)"
+            },
+            {
+                "command": "pterodactyl.restartServer",
+                "title": "Restart Server",
+                "icon": "$(debug-restart)"
+            },
+            {
+                "command": "pterodactyl.stopServer",
+                "title": "Stop Server",
+                "icon": "$(debug-stop)"
+            },
+            {
+                "command": "pterodactyl.killServer",
+                "title": "Kill Server",
+                "icon": "$(flame)"
+            }
+        ],
+        "menus": {
+            "view/title": [
+                {
+                    "command": "pterodactyl.addAccount",
+                    "when": "view == pterodactylServers",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "pterodactyl.refreshServers",
+                    "when": "view == pterodactylServers",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "pterodactyl.exportData",
+                    "when": "view == pterodactylServers",
+                    "group": "overflow@1"
+                },
+                {
+                    "command": "pterodactyl.importData",
+                    "when": "view == pterodactylServers",
+                    "group": "overflow@2"
+                },
+                {
+                    "command": "pterodactyl.showSftpLog",
+                    "when": "view == pterodactylServers",
+                    "group": "overflow@3"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "pterodactyl.editAccount",
+                    "when": "view == pterodactylServers && viewItem == account",
+                    "group": "inline@1"
+                },
+                {
+                    "command": "pterodactyl.removeAccount",
+                    "when": "view == pterodactylServers && viewItem == account",
+                    "group": "inline@2"
+                },
+                {
+                    "command": "pterodactyl.connectServer",
+                    "when": "view == pterodactylServers && viewItem =~ /server.*/",
+                    "group": "inline@1"
+                },
+                {
+                    "command": "pterodactyl.startServer",
+                    "when": "view == pterodactylServers && viewItem == server-offline",
+                    "group": "inline@2"
+                },
+                {
+                    "command": "pterodactyl.restartServer",
+                    "when": "view == pterodactylServers && viewItem =~ /server-(running|starting|stopping)/",
+                    "group": "inline@2"
+                },
+                {
+                    "command": "pterodactyl.stopServer",
+                    "when": "view == pterodactylServers && viewItem =~ /server-(running|starting)/",
+                    "group": "inline@3"
+                },
+                {
+                    "command": "pterodactyl.killServer",
+                    "when": "view == pterodactylServers && viewItem == server-stopping",
+                    "group": "inline@4"
+                },
+                {
+                    "command": "pterodactyl.killServer",
+                    "when": "view == pterodactylServers && viewItem =~ /server-(running|starting|stopping)/",
+                    "group": "context@5"
+                },
+                {
+                    "command": "pterodactyl.disconnectServer",
+                    "when": "view == pterodactylServers && viewItem =~ /server.*/",
+                    "group": "context@1"
+                },
+                {
+                    "command": "pterodactyl.reconnectServer",
+                    "when": "view == pterodactylServers && viewItem =~ /server.*/",
+                    "group": "context@2"
+                },
+                {
+                    "command": "pterodactyl.openTerminal",
+                    "when": "view == pterodactylServers && viewItem =~ /server.*/",
+                    "group": "context@3"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "@types/ssh2": "^1.15.5",
+        "@types/vscode": "^1.80.0",
+        "@types/ws": "^8.5.10",
+        "typescript": "^5.3.0",
+        "vsce": "^2.15.0"
+    },
+    "dependencies": {
+        "ssh2": "^1.15.0",
+        "ws": "^8.16.0"
+    }
+}
