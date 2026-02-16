@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: Package Extension
-        run: npx vsce package
+        run: npx @vscode/vsce package
 
       - name: Extract Changelog
         run: |

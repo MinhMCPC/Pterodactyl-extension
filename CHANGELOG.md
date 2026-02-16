@@ -2,6 +2,12 @@
 
 All notable changes to the "pterodactyl-sftp" extension will be documented in this file.
 
+## [1.6.1] - 2026-02-16
+
+- Improved release workflow automation
+- Updated dependencies
+- Use PNG icon for marketplace compatibility
+
 ## [1.0.0] - 2026-02-16
 
 - Initial release
