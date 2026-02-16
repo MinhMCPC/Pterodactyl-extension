@@ -3,6 +3,7 @@
     "displayName": "Pterodactyl SFTP",
     "description": "Connect to Pterodactyl panel servers, browse and edit files remotely via API",
     "version": "1.0.0",
+    "license": "MIT",
     "publisher": "minhmcpc",
     "author": "minhmcpc",
     "engines": {
@@ -15,6 +16,26 @@
         "onStartupFinished"
     ],
     "main": "./out/extension.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/minhmcpc/pterodactyl-sftp.git"
+    },
+    "bugs": {
+        "url": "https://github.com/minhmcpc/pterodactyl-sftp/issues"
+    },
+    "homepage": "https://github.com/minhmcpc/pterodactyl-sftp/blob/main/README.md",
+    "keywords": [
+        "pterodactyl",
+        "sftp",
+        "server management",
+        "remote",
+        "terminal",
+        "console"
+    ],
+    "galleryBanner": {
+        "color": "#1e1e3f",
+        "theme": "dark"
+    },
     "contributes": {
         "viewsContainers": {
             "activitybar": [
