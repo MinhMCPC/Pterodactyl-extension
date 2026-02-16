@@ -3,6 +3,7 @@
     "displayName": "Pterodactyl SFTP",
     "description": "Connect to Pterodactyl panel servers, browse and edit files remotely via API",
     "version": "1.5.0",
+    "icon": "resources/logo.svg",
     "license": "MIT",
     "publisher": "minhmcpc",
     "author": "minhmcpc",
@@ -42,7 +43,7 @@
                 {
                     "id": "pterodactyl-sftp",
                     "title": "Pterodactyl SFTP",
-                    "icon": "resources/icon.svg"
+                    "icon": "resources/logo.svg"
                 }
             ]
         },
@@ -51,7 +52,7 @@
                 {
                     "id": "pterodactylServers",
                     "name": "Servers",
-                    "icon": "resources/icon.svg"
+                    "icon": "resources/logo.svg"
                 }
             ]
         },
