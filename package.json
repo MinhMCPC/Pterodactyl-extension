@@ -2,7 +2,7 @@
     "name": "pterodactyl-sftp",
     "displayName": "Pterodactyl SFTP",
     "description": "Connect to Pterodactyl panel servers, browse and edit files remotely via API",
-    "version": "1.6.3",
+    "version": "2.0.2",
     "icon": "resources/icon.png",
     "license": "MIT",
     "publisher": "minhmcpc",
@@ -43,7 +43,7 @@
                 {
                     "id": "pterodactyl-sftp",
                     "title": "Pterodactyl SFTP",
-                    "icon": "resources/logo.svg"
+                    "icon": "resources/icon.png"
                 }
             ]
         },
@@ -52,7 +52,7 @@
                 {
                     "id": "pterodactylServers",
                     "name": "Servers",
-                    "icon": "resources/logo.svg"
+                    "icon": "resources/icon.png"
                 }
             ]
         },
@@ -108,6 +108,11 @@
                 "icon": "$(cloud-upload)"
             },
             {
+                "command": "pterodactyl.setupSshKey",
+                "title": "Pterodactyl: Setup Auto SSH Key",
+                "icon": "$(key)"
+            },
+            {
                 "command": "pterodactyl.showSftpLog",
                 "title": "Pterodactyl: Show SFTP Debug Log",
                 "icon": "$(output)"
@@ -139,6 +144,11 @@
                     "command": "pterodactyl.addAccount",
                     "when": "view == pterodactylServers",
                     "group": "navigation@1"
+                },
+                {
+                    "command": "pterodactyl.setupSshKey",
+                    "when": "view == pterodactylServers",
+                    "group": "navigation@3"
                 },
                 {
                     "command": "pterodactyl.refreshServers",

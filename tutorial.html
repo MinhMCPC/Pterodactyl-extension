@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pterodactyl SFTP - Hướng dẫn sử dụng hiệu quả</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --primary: #6c5ce7;
+            --primary-light: #8e7ff7;
+            --primary-dark: #5b4cc4;
+            --accent: #00d2ff;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #ff4757;
+            --bg: #0a0b1e;
+            --sidebar-bg: #11122a;
+            --card-bg: #1a1b3a;
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #e1e1f0;
+            --text-muted: #9495b0;
+            --text-white: #ffffff;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.7;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Nav */
+        .sidebar {
+            width: 300px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            padding: 40px 24px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 48px;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            font-size: 32px;
+            filter: drop-shadow(0 0 10px var(--primary));
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-white);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 24px 0 12px 12px;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+        }
+
+        .nav-item a:hover {
+            color: var(--primary-light);
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .nav-item a.active {
+            color: var(--text-white);
+            background: var(--primary);
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            margin-left: 300px;
+            padding: 80px 10%;
+            max-width: 1200px;
+        }
+
+        header {
+            margin-bottom: 64px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(108, 92, 231, 0.15);
+            color: var(--primary-light);
+            border: 1px solid rgba(108, 92, 231, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--text-white);
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+        }
+
+        section {
+            margin-bottom: 100px;
+            scroll-margin-top: 40px;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-white);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        h2::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(108, 92, 231, 0.3);
+        }
+
+        .step-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            color: var(--text-white);
+            margin-bottom: 16px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        ul,
+        ol {
+            margin-left: 20px;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        .highlight-box {
+            background: rgba(108, 92, 231, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            margin: 24px 0;
+        }
+
+        .tip-box {
+            background: rgba(46, 204, 113, 0.05);
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            margin: 24px 0;
+        }
+
+        .img-container {
+            margin-top: 24px;
+            background: #000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        img {
+            width: 100%;
+            display: block;
+            opacity: 0.9;
+        }
+
+        .btn-demo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        footer {
+            margin-top: 120px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .heart {
+            color: var(--danger);
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 60px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="sidebar">
+        <a href="#" class="brand">
+            <span class="brand-icon">🦕</span>
+            <span class="brand-name">PTERO SFTP</span>
+        </a>
+
+        <div class="nav-group-title">Bắt đầu</div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="#jump-start" class="active">🚀 Tổng quan</a></li>
+            <li class="nav-item"><a href="#installation">📥 Cài đặt nhanh</a></li>
+        </ul>
+
+        <div class="nav-group-title">Sử dụng</div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="#add-account">🔑 Thêm tài khoản</a></li>
+            <li class="nav-item"><a href="#ssh-auto">✨ SSH Auto-Setup</a></li>
+            <li class="nav-item"><a href="#sftp-connect">📂 Quản lý File</a></li>
+            <li class="nav-item"><a href="#terminal">💻 Console / Terminal</a></li>
+        </ul>
+
+        <div class="nav-group-title">Hỗ trợ</div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="#troubleshooting">🛠️ Khắc phục lỗi</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <header id="jump-start">
+            <div class="version-badge">Version 2.0.2 • Stable</div>
+            <h1>Xin chào, <br>Cùng làm chủ Pterodactyl SFTP nhé!</h1>
+            <p class="hero-desc">Chào mừng bạn đến với thế giới quản lý Server nhẹ nhàng hơn. Extension này giúp bạn
+                chỉnh sửa code trực tiếp trên VS Code mà không cần thêm bất kỳ phần mềm nặng nề nào khác.</p>
+        </header>
+
+        <section id="installation">
+            <h2>Cài đặt cực nhanh</h2>
+            <div class="card">
+                <div class="step-num">1</div>
+                <h3>Mở Extension Marketplace</h3>
+                <p>Nhấn tổ hợp phím <code>Ctrl + Shift + X</code> (Windows) hoặc <code>Cmd + Shift + X</code> (Mac).</p>
+                <div class="highlight-box">
+                    Nhập tìm kiếm: <strong>"Pterodactyl SFTP"</strong> của tác giả <strong>MinhMCPC</strong>.
+                </div>
+                <p>Nhấn <strong>Install</strong> và bạn sẽ thấy biểu tượng 🦖 xuất hiện ở thanh bên trái của VS Code.
+                </p>
+            </div>
+        </section>
+
+        <section id="add-account">
+            <h2>Kết nối lần đầu tiên</h2>
+            <p>Để VS Code có thể "nói chuyện" với Server của bạn, chúng ta cần một chiếc chìa khóa (API Key).</p>
+
+            <div class="card">
+                <h3>Cách lấy API Key</h3>
+                <ol>
+                    <li>Truy cập vào Panel Pterodactyl của bạn.</li>
+                    <li>Vào mục <strong>Account</strong> (thường ở góc trên cùng bên phải).</li>
+                    <li>Chọn tab <strong>API Credentials</strong>.</li>
+                    <li>Tạo một Key mới với mô tả "VS Code" và copy mã đó nhé!</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>Thêm vào VS Code</h3>
+                <p>Nhấn nút <strong>(+)</strong> trong Extension và điền thông tin:</p>
+                <ul>
+                    <li><strong>Display Name:</strong> Đặt tên gì cũng được (VD: Server Minecraft của tôi).</li>
+                    <li><strong>Panel URL:</strong> Địa chỉ trang web panel của bạn.</li>
+                    <li><strong>API Key:</strong> Dán mã bạn vừa copy vào đây.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="ssh-auto">
+            <h2>Tính năng "Sịn": SSH Auto-Setup</h2>
+            <div class="tip-box">
+                <strong>Gợi ý:</strong> Dùng SSH Key sẽ nhanh và bảo mật hơn dùng mật khẩu rất nhiều. v2.0.2 đã tối ưu
+                hóa định dạng để kết nối luôn mượt mà.
+            </div>
+
+            <div class="card">
+                <h3>Thiết lập 1-Click</h3>
+                <p>Trong quá trình thêm tài khoản, hãy chuyển sang tab <strong>SSH Key</strong> và bật
+                    <strong>"Auto-configure SSH Key"</strong>.</p>
+                <p>Extension sẽ tự mình làm hết mọi việc:</p>
+                <ul>
+                    <li>Tạo khóa bảo mật trên máy bạn.</li>
+                    <li>Tự mang khóa đó lên Panel Pterodactyl đăng ký.</li>
+                    <li>Cấu hình sẵn sàng để bạn chỉ việc nhấn "Connect".</li>
+                </ul>
+                <div class="img-container">
+                    <div
+                        style="padding: 40px; text-align: center; color: var(--text-muted); border: 1px dashed var(--border);">
+                        ✨ Giao diện thiết kế mới v2.0 cực kỳ cao cấp ✨
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sftp-connect">
+            <h2>Quản lý File như đang ở Local</h2>
+            <div class="card">
+                <h3>Kết nối</h3>
+                <p>Sau khi xong bước thêm tài khoản, các Server của bạn sẽ hiện ra. Click chuột phải chọn
+                    <strong>Connect (SFTP)</strong>.</p>
+                <p>Lúc này, toàn bộ file trên server sẽ hiện ra trong trình Explorer của VS Code. Bạn có thể:</p>
+                <ul>
+                    <li>Chỉnh sửa code và <code>Ctrl + S</code> để lưu ngay lên Server.</li>
+                    <li>Kéo thả file từ máy tính vào để upload nhanh chóng.</li>
+                    <li>Đổi tên, xóa hoặc tạo file/folder mới dễ dàng.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="terminal">
+            <h2>Điều khiển Server (Terminal)</h2>
+            <div class="card">
+                <p>Không cần quay lại trình duyệt để xem log hay gõ lệnh! Extension hỗ trợ Terminal trực tiếp.</p>
+                <p>Chuột phải vào Server -> <strong>Open Terminal</strong>.</p>
+                <div class="highlight-box">
+                    Hỗ trợ đầy đủ Console log thời gian thực và nhập lệnh điều hành cực nhanh.
+                </div>
+            </div>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>Bạn gặp khó khăn?</h2>
+            <div class="card">
+                <h3>Lỗi kết nối (Unsupported key format)</h3>
+                <p>Nếu bạn dùng các phiên bản cũ hơn 2.0.1, đây là lỗi phổ biến. <strong>Hãy nâng cấp lên
+                        v2.0.2</strong>, xóa tài khoản cũ và thêm lại bằng tính năng Auto-Setup để sửa hoàn toàn lỗi
+                    này.</p>
+            </div>
+            <div class="card">
+                <h3>Liên hệ hỗ trợ</h3>
+                <p>Nếu vẫn gặp vấn đề, hãy ghé thăm GitHub của dự án hoặc gửi Issue để mình hỗ trợ nhé!</p>
+                <a href="https://github.com/MinhMCPC/Pterodactyl-extension" class="btn-demo">Ghé thăm GitHub</a>
+            </div>
+        </section>
+
+        <footer>
+            <p>Được tạo ra với cực nhiều tâm huyết <span class="heart">❤️</span> bởi <strong>MinhMCPC</strong></p>
+            <p style="margin-top: 8px; font-size: 12px;">© 2026 Pterodactyl SFTP Extension</p>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth highlighting for nav
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section, header');
+            const navLinks = document.querySelectorAll('.nav-item a');
+
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

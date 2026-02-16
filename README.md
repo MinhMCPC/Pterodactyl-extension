@@ -1,8 +1,21 @@
-# Pterodactyl SFTP for VS Code
+# Pterodactyl SFTP for VS Code 🦕
 
-Connect to your Pterodactyl panel servers, browse and edit files remotely effectively, and manage server power states directly from VS Code.
+Manage your Pterodactyl panel servers directly from VS Code. Browse, edit, and sync files with high security and speed.
+
+[📖 Tài liệu hướng dẫn sử dụng (Tiếng Việt)](file:///./tutorial.html)
 
 ## Features
+
+### 🔑 Auto SSH Key Setup (New in v1.6.4)
+NOTE: This feature requires `ssh-keygen` behavior but is fully implemented in Node.js.
+1.  Open the Command Palette (`Ctrl+Shift+P`).
+2.  Run **Pterodactyl: Setup Auto SSH Key**.
+3.  Select the account you want to configure.
+4.  Enter a name for the key (e.g., `VSCode Key`) and an optional passphrase.
+5.  The extension will:
+    *   Generate a secure **Ed25519** SSH key pair.
+    *   **Save the Private Key** to your local `.ssh` directory.
+    *   **Upload the Public Key** automatically to your Pterodactyl Panel account.
 
 -   **Server Management**: View all your servers in the "Pterodactyl SFTP" view.
 -   **SFTP Integration**:

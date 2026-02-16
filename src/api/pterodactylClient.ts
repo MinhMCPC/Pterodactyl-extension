@@ -245,4 +245,11 @@ export class PterodactylClient {
     async sendCommand(serverUuid: string, command: string): Promise<void> {
         await this.request<void>('POST', `/api/client/servers/${serverUuid}/command`, { command });
     }
+
+    async createSshKey(name: string, publicKey: string): Promise<void> {
+        await this.request<void>('POST', '/api/client/account/ssh-keys', {
+            name: name,
+            public_key: publicKey
+        });
+    }
 }

@@ -42,6 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(treeView);
 
+
     // Register commands
     context.subscriptions.push(
         vscode.commands.registerCommand('pterodactyl.addAccount', () => openAddAccountForm()),
@@ -54,6 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('pterodactyl.exportData', () => accountManager.exportAccounts()),
         vscode.commands.registerCommand('pterodactyl.importData', () => accountManager.importAccounts()),
         vscode.commands.registerCommand('pterodactyl.showSftpLog', () => SftpClient.showDebugLog()),
+        vscode.commands.registerCommand('pterodactyl.setupSshKey', () => setupSshKey()),
         vscode.commands.registerCommand('pterodactyl.openTerminal', (item?: ServerTreeItem) => openTerminal(item)),
 
         // Power Actions
@@ -69,10 +71,75 @@ export function activate(context: vscode.ExtensionContext) {
     Logger.info('Pterodactyl SFTP extension activated');
 }
 
+// ... existing functions ...
+
+import { SshKeyGenerator } from './utils/sshKeyGenerator';
+
+async function setupSshKey(): Promise<void> {
+    const accounts = accountManager.getAccounts();
+    if (accounts.length === 0) {
+        vscode.window.showErrorMessage('No accounts found. Please add an account first.');
+        return;
+    }
+
+    // Select Account
+    const picked = await vscode.window.showQuickPick(
+        accounts.map(a => ({ label: a.name, description: a.panelUrl, account: a })),
+        { placeHolder: 'Select account to upload SSH Key to' }
+    );
+    if (!picked) return;
+    const account = picked.account;
+
+    // Get Key Name
+    const keyName = await vscode.window.showInputBox({
+        prompt: 'Enter a name for this SSH Key',
+        value: 'VSCode Pterodactyl Key',
+        validateInput: (value) => value ? null : 'Name is required'
+    });
+    if (!keyName) return;
+
+    // Optional Passphrase
+    const passphrase = await vscode.window.showInputBox({
+        prompt: 'Enter a passphrase for the private key (Optional)',
+        password: true,
+        placeHolder: 'Leave empty for no passphrase'
+    });
+
+    try {
+        await vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: 'Generating and Uploading SSH Key...',
+            cancellable: false
+        }, async (progress) => {
+            progress.report({ message: 'Generating Ed25519 Key Pair...' });
+
+            // 1. Generate Key
+            const keyPair = SshKeyGenerator.generateEd25519KeyPair(passphrase); // Passphrase can be undefined/empty string
+
+            progress.report({ message: 'Saving Private Key locally...' });
+
+            // 2. Save Private Key
+            const keyPath = await SshKeyGenerator.savePrivateKey(keyName, keyPair.privateKey);
+
+            progress.report({ message: 'Uploading Public Key to Panel...' });
+
+            // 3. Upload Public Key
+            const client = new PterodactylClient(account.panelUrl, account.apiKey);
+            await client.createSshKey(keyName, keyPair.publicKey);
+
+            vscode.window.showInformationMessage(`SSH Key "${keyName}" created! Private key saved to: ${keyPath}`);
+        });
+    } catch (err: any) {
+        Logger.error('Failed to setup SSH key', err);
+        vscode.window.showErrorMessage(`Failed to setup SSH Key: ${err.message}`);
+    }
+}
+
+
 function openAddAccountForm(): void {
     AccountFormPanel.show(
         extensionContext.extensionUri,
-        async (data) => {
+        async (data: any) => { // Use any to allow createSshKey extra prop
             // Test connection
             const success = await vscode.window.withProgress(
                 {
@@ -94,9 +161,48 @@ function openAddAccountForm(): void {
                 if (proceed !== 'Save') { return; }
             }
 
+            // Handle Auto SSH Key Setup
+            if (data.createSshKey && data.sftpAuthMethod === 'ssh-key') {
+                try {
+                    await vscode.window.withProgress({
+                        location: vscode.ProgressLocation.Notification,
+                        title: 'Generating and Uploading SSH Key...',
+                        cancellable: false
+                    }, async (progress) => {
+                        // 1. Generate Key
+                        const keyName = `VSCode_${data.name.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now().toString().slice(-4)}`;
+                        progress.report({ message: 'Generating secure key pair...' });
+
+                        const keyPair = SshKeyGenerator.generateEd25519KeyPair();
+
+                        // 2. Save Locally
+                        progress.report({ message: 'Saving private key...' });
+                        const keyPath = await SshKeyGenerator.savePrivateKey(keyName, keyPair.privateKey);
+
+                        // 3. Upload to Panel
+                        progress.report({ message: 'Uploading to Panel...' });
+                        const client = new PterodactylClient(data.panelUrl, data.apiKey);
+                        await client.createSshKey(keyName, keyPair.publicKey);
+
+                        // 4. Update Account Data with new key path
+                        data.privateKeyPath = keyPath;
+                        data.privateKeyData = ''; // Clear data if we are using path
+
+                        vscode.window.showInformationMessage(`SSH Key generated and uploaded: ${keyName}`);
+                    });
+                } catch (err: any) {
+                    vscode.window.showErrorMessage(`Failed to auto-setup SSH key: ${err.message}. Account not saved.`);
+                    return;
+                }
+            }
+
+            // Clean up extra props
+            const accountData = { ...data };
+            delete accountData.createSshKey;
+
             const account: PteroAccount = {
                 id: accountManager.generateId(),
-                ...data,
+                ...accountData,
             };
 
             await accountManager.addAccount(account);
