@@ -2,7 +2,7 @@
     "name": "pterodactyl-sftp",
     "displayName": "Pterodactyl SFTP",
     "description": "Connect to Pterodactyl panel servers, browse and edit files remotely via API",
-    "version": "1.6.2",
+    "version": "1.6.3",
     "icon": "resources/icon.png",
     "license": "MIT",
     "publisher": "minhmcpc",
@@ -19,12 +19,12 @@
     "main": "./out/extension.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/minhmcpc/pterodactyl-sftp.git"
+        "url": "https://github.com/MinhMCPC/Pterodactyl-extension.git"
     },
     "bugs": {
-        "url": "https://github.com/minhmcpc/pterodactyl-sftp/issues"
+        "url": "https://github.com/MinhMCPC/Pterodactyl-extension/issues"
     },
-    "homepage": "https://github.com/minhmcpc/pterodactyl-sftp/blob/main/README.md",
+    "homepage": "https://github.com/MinhMCPC/Pterodactyl-extension/blob/main/README.md",
     "keywords": [
         "pterodactyl",
         "sftp",

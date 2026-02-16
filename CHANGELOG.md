@@ -2,6 +2,11 @@
 
 All notable changes to the "pterodactyl-sftp" extension will be documented in this file.
 
+## [1.6.3] - 2026-02-16
+
+- Updated repository URL
+- Improved extension icon
+
 ## [1.6.2] - 2026-02-16
 
 - Fixed npm warnings and deprecated dependencies
